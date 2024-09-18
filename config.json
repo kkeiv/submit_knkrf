@@ -1,0 +1,21 @@
+{
+    "version": "1.0",
+
+    "tag": "knk_temp",
+
+    "database_001": {
+        "type": "mongo",
+        "host": "localhost",
+        "port": 27017,
+        "name": "world_for_life",
+        "default": true
+    },
+
+    "log": {
+        "dir": ["home", "programms", "logs", "demo_bot"],
+        "tag": "demo_bot",
+        "size": 1,
+        "files": 3,
+        "track": "tracker"
+    }
+}
