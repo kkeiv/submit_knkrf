@@ -11,7 +11,7 @@ app = Flask(__name__)
 @app.route("/test")
 def hello_test():
     print("/test")
-    return "Hello World! Temp Test"
+    return "Hello World! Submit Test"
 
 
 @app.route('/submit', methods=['POST'])
