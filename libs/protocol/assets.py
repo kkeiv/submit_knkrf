@@ -17,7 +17,7 @@ class ParamsType(Enum):
 
 
 class Params(Enum):
-    par_05 = {"num": 5, "pname": "par_numbers", "type": "dec", "len": 2}
+    par_05 = {"num": 5, "pname": "par_numbers", "type": "dec", "len": -1}
     par_10 = {"num": 10, "pname": "node_id", "type": "dec", "len": 10}
     par_11 = {"num": 11, "pname": "serial", "type": "string", "len": 10}
     par_12 = {"num": 12, "pname": "device_type", "type": "dec", "len": 2}
