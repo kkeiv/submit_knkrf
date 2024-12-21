@@ -1,11 +1,17 @@
-from datetime import datetime
-from flask import Flask, render_template, request, jsonify     # types: ignored
+from flask import Flask, request                        # types: ignored
 from libs.protocol.kProtocolRoot import process_data
-from pymongo import MongoClient
-from pymongo.collection import Collection
+
+from libs.common.config import cfg
 
 
 app = Flask(__name__)
+
+
+CONFIG_NAME: str = "config.json"
+if not cfg.load(CONFIG_NAME):
+    print(f"Configuration does not loaded. Check {CONFIG_NAME}")
+    exit(1)
+print(f"Configuration loaded: {cfg.read()}")
 
 
 @app.route("/test")

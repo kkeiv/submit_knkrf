@@ -1,8 +1,6 @@
 from typing import Optional, Any
 from enum import Enum
 
-from pymongo.database import Database as MongoDB
-
 
 class Errores(Enum):
     noDatabase = "empty_database_list"

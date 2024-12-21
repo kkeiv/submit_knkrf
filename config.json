@@ -1,19 +1,22 @@
 {
     "version": "1.0",
 
-    "tag": "knk_temp",
+    "tag": "submit_ktemp",
 
     "database_001": {
-        "type": "mongo",
+        "default": true,
+        "type": "mongodb",
         "host": "localhost",
         "port": 27017,
-        "name": "world_for_life",
-        "default": true
+        "name": "c51905_temp_knkrf_ru",
+        "password": "KiLzuJehpiweg40",
+        "mirrors": ["mongo1.c51905.h2", "mongo2.c51905.h2", "mongo3.c51905.h2"],
+        "cl_device_data": "device_data"
     },
 
     "log": {
-        "dir": ["home", "programms", "logs", "demo_bot"],
-        "tag": "demo_bot",
+        "dir": ["home", "programms", "logs", "submit_ktemp"],
+        "tag": "submit_ktemp",
         "size": 1,
         "files": 3,
         "track": "tracker"
