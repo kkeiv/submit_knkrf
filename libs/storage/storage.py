@@ -17,7 +17,6 @@ class Storage:
 
     def printForLog(self, debug: bool = False) -> str:
         _dbs = ""
-        print(1, 200, debug)
         for _name, _val in self._dbs.items():
             if debug:
                 _adds = [f"{_k}:{_v}" for _k, _v in _val.items()]

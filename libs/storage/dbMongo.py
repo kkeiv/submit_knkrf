@@ -26,7 +26,6 @@ def loadObjectFull(dbConf: dict, collection: str, idName: str, idValue: str) -> 
 
 def saveObject(dbConf: dict, collection: str, idName: str, idValue: str, update: dict) -> str:
     # print(f"save: {idValue}")
-    # print(update)
     if dbConf.get(DBase.db.name, DBase.db.value) is None:
         dbConf[DBase.db.name] = _connectDatabase(
             host=dbConf.get(DBase.host.name, DBase.host.value),

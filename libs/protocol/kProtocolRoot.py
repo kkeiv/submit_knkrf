@@ -24,7 +24,6 @@ class Errors(Enum):
 
 
 def validate_info(info: dict) -> str:
-    print(1, 100, Params.par_05.value, info)
     _par_name = Params.par_05.value[ParamsPar.pname.name]
     if _par_name not in info:
         return Errors.noParamsCount.value
@@ -55,7 +54,6 @@ def save_info(info: dict) -> str:
     _uri = f"{_uri}@{','.join(_db.get(DBase.mirrors.name, DBase.mirrors.default))}"
     _uri = f"{_uri}/{_db.get(DBase.dbname.name, DBase.dbname.default)}"
     _uri = f"{_uri}?{_db.get(DBase.additional.name, DBase.additional.default)}"
-    print(1, 300, _uri)
 
     # Connect to MongoDB server collection
     client: MongoClient = MongoClient(_uri)
