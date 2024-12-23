@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class __assets__(Enum):
-    DEVICES_DATA_COLLECTION = "device_data"
+    DEVICES_DATA_COLLECTION = "devices_data"
 
 
 class ParamsPar(Enum):
