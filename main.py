@@ -1,4 +1,5 @@
-import pytz
+import pytz                                             # types: ignored
+import time
 from datetime import datetime
 from flask import Flask, request                        # types: ignored
 from libs.protocol.kProtocolRoot import process_data, save_info
@@ -13,14 +14,17 @@ if not result:
 
 save_info({"test": "test"})
 
+print("global timestamp:", int(time.time()))
 
 # Получение текущего времени в UTC (GMT0)
 utc_time = datetime.now(pytz.utc)
 print("Текущий таймстамп в GMT0 (UTC):", utc_time.strftime('%Y-%m-%d %H:%M:%S'))
+print("timestamp:", utc_time.timestamp())
 
 # Получение текущего времени в локальном часовом поясе
 local_time = datetime.now()
 print("Текущий таймстамп в текущем часовом поясе:", local_time.strftime('%Y-%m-%d %H:%M:%S'))
+print("timestamp:", local_time.timestamp())
 
 # Определение текущего часового пояса
 local_tz = datetime.now().astimezone().tzinfo
