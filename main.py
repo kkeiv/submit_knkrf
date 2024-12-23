@@ -1,17 +1,17 @@
 from flask import Flask, request                        # types: ignored
-from libs.protocol.kProtocolRoot import process_data
-
+from libs.protocol.kProtocolRoot import process_data, save_info
 from libs.common.config import cfg
 
-
-app = Flask(__name__)
-
-
 CONFIG_NAME: str = "config.json"
-if not cfg.load(CONFIG_NAME):
+result = cfg.load(CONFIG_NAME)
+print(1, 100, cfg.read(debug=False))
+if not result:
     print(f"Configuration does not loaded. Check {CONFIG_NAME}")
     exit(1)
-print(f"Configuration loaded: {cfg.read()}")
+
+save_info({"test": "test"})
+
+app = Flask(__name__)
 
 
 @app.route("/test")
@@ -28,4 +28,9 @@ def submit():
     _err, _info = process_data(_data)
     print(3, f"Info: {_info}, err: {_err}")
 
-    return f"OK"
+    return "OK"
+
+
+if __name__ == "__main__":
+    print("Starting Flask application...")
+    app.run(debug=True)

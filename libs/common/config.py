@@ -5,14 +5,12 @@ import logging
 from enum import Enum
 from typing import Optional
 
-from aiogram import Bot
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
 from libs.common import functions as fn
-from libs.cache.users import CacheUsers
-from storage.storage import Storage
+from libs.storage.storage import Storage
 
-_min_config_version_ = '1.0'
+
+class _assets_:
+    min_config_version = '1.0'
 
 
 class Errores(Enum):
@@ -78,9 +76,13 @@ class Settings:
     def load(self, config: dict = {}) -> None:
         if "tag" in config:
             self.tag = config['tag']
+        if "timezone" in config:
+            self.timezone = config['timezone']
 
     def read(self) -> str:
-        _ret = f"{{tag: {self.tag}}}"
+        _ret = f"tag: {self.tag}"
+        _ret = f"{_ret}, timezone: {self.timezone}"
+        _ret = f"{{{_ret}}}"
         return _ret
 
 
@@ -139,15 +141,8 @@ class Config:
         self.tracker: logging.Logger = default_logger(self.rootdir, "def_tracker")
 
         self.set: Settings = Settings()
-        self.secret: Secrets = Secrets()
         self.log: Log = Log()
-
         self.store: Storage = Storage()
-        self.cu: CacheUsers = CacheUsers(self.store)
-        self.scheduler = AsyncIOScheduler()
-        self.tgBot: Optional[Bot] = None
-
-        self.subscription: Subscription = Subscription()
 
     def load(self, config_path: str) -> bool:
         if not os.path.exists(config_path):
@@ -158,15 +153,12 @@ class Config:
         with open(config_path, 'r') as config_file:
             _config = json.load(config_file)
 
-        if not fn.validate_version(_config.get('version', '0.0.0'), _min_config_version_):
+        if not fn.validate_version(_config.get('version', '0.0.0'), _assets_.min_config_version):
             print(Errores.NO_VALID_VERSION.value)
             return False
 
-        self.secret.load(_config)
         self.set.load(_config)
         self.log.load(_config)
-
-        self.subscription.load(_config)
 
         for dbConf in _config:
             if dbConf.startswith('database'):
@@ -176,12 +168,11 @@ class Config:
     def read(self, debug: bool = False) -> str:
         _ret = ""
         if debug:
-            _ret = f"{_ret}secrets: {self.secret.read()}"
             _ret = f"{_ret}, settings: {self.set.read()}"
         else:
             _ret = f"{_ret}settings: {self.set.read()}"
         _ret = f"{_ret}, log: {self.log.read()}"
-        _ret = f"{_ret}, {self.store.printForLog()}"
+        _ret = f"{_ret}, {self.store.printForLog(debug=debug)}"
         return f"SETTINGS: {{{_ret}}}"
 
 

@@ -1,10 +1,15 @@
 import time
 from enum import Enum
 from typing import Tuple
-from libs.protocol.assets import Params, ParamsPar
-from libs.protocol import kProtocol55 as prot55
+
 from pymongo import MongoClient
 from pymongo.collection import Collection
+
+from libs.common.config import cfg
+from libs.protocol.assets import Params, ParamsPar
+from libs.protocol import kProtocol55 as prot55
+from libs.protocol.assets import __assets__ as _asProt_
+from libs.storage.assets import DBase
 
 
 class Errors(Enum):
@@ -37,21 +42,27 @@ def validate_info(info: dict) -> str:
 
 
 def save_info(info: dict) -> str:
-    uri = (
-        "mongodb://c51905_temp_knkrf_ru:KiLzuJehpiweg40@"
-        "mongo1.c51905.h2,mongo2.c51905.h2,mongo3.c51905.h2/c51905_temp_knkrf_ru?"
-        "replicaSet=MongoReplica"
-    )
 
-    # Подключение к MongoDB
-    client: MongoClient = MongoClient(uri)
-    # Доступ к базе данных
-    db = client['c51905_temp_knkrf_ru']
+    #uri = (
+    #    "mongodb://c51905_temp_knkrf_ru:KiLzuJehpiweg40@"
+    #    "mongo1.c51905.h2,mongo2.c51905.h2,mongo3.c51905.h2/c51905_temp_knkrf_ru?"
+    #    "replicaSet=MongoReplica"
+    #)
+    _db: dict = cfg.store.getDefaultDB()
+    _uri = _db.get(DBase.dbtype.name, DBase.dbtype.default).value
+    _uri = f"{_uri}://{_db.get(DBase.login.name, DBase.login.default)}"
+    _uri = f"{_uri}:{_db.get(DBase.password.name, DBase.password.default)}"
+    _uri = f"{_uri}@{','.join(_db.get(DBase.mirrors.name, DBase.mirrors.default))}"
+    _uri = f"{_uri}/{_db.get(DBase.dbname.name, DBase.dbname.default)}"
+    _uri = f"{_uri}?{_db.get(DBase.additional.name, DBase.additional.default)}"
+    print(1, 300, _uri)
 
-    # Доступ к коллекции, создаем коллекцию 'my_collection', если она не существует
-    collection: Collection = db['my_collection']
+    # Connect to MongoDB server collection
+    client: MongoClient = MongoClient(_uri)
+    db = client[_db.get(DBase.dbname.name, DBase.dbname.default)]
+    collection: Collection = db[_asProt_.DEVICES_DATA_COLLECTION.value]
 
-    # Вставляем документ (словарь) в коллекцию
+    # Add new data to database
     result = collection.insert_one(info)
 
     return Errors.noError.value

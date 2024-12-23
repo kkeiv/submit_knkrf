@@ -1,6 +1,10 @@
 from enum import Enum
 
 
+class __assets__(Enum):
+    DEVICES_DATA_COLLECTION = "device_data"
+
+
 class ParamsPar(Enum):
     num = -1
     pname = "unuse"

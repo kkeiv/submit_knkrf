@@ -2,15 +2,18 @@
     "version": "1.0",
 
     "tag": "submit_ktemp",
+    "timezone": 3,
 
     "database_001": {
         "default": true,
-        "type": "mongodb",
+        "dbtype": "mongodb",
         "host": "localhost",
         "port": 27017,
-        "name": "c51905_temp_knkrf_ru",
+        "dbname": "c51905_temp_knkrf_ru",
+        "login": "c51905_temp_knkrf_ru",
         "password": "KiLzuJehpiweg40",
         "mirrors": ["mongo1.c51905.h2", "mongo2.c51905.h2", "mongo3.c51905.h2"],
+        "additional": "replicaSet=MongoReplica",
         "cl_device_data": "device_data"
     },
 
