@@ -1,4 +1,4 @@
-from flask import Flask, request                        # types: ignored
+from flask import Flask, request, jsonify                        # types: ignored
 from libs.protocol.kProtocolRoot import process_data
 from libs.common.config import cfg
 
@@ -24,7 +24,13 @@ def submit():
     _err, _info = process_data(_data)
     print(3, f"Info: {_info}, err: {_err}")
 
-    return "OK"
+    response = {
+        "status": "OK",
+        "light": "ON",
+        "reset": True
+    }
+
+    return jsonify(response)
 
 
 if __name__ == "__main__":
