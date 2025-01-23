@@ -1,8 +1,9 @@
 from enum import Enum
 
 
-class __assets__(Enum):
+class __assets__():
     DEVICES_DATA_COLLECTION = "devices_data"
+    DEVICES_COLLECTION = "devices"
 
 
 class ParamsPar(Enum):

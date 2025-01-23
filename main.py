@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify                        # types: ignored
-from libs.protocol.kProtocolRoot import process_data
+from libs.protocol.kProtocolRoot import process_data, prepare_response
 from libs.common.config import cfg
 
 CONFIG_NAME: str = "config.json"
@@ -24,12 +24,10 @@ def submit():
     _err, _info = process_data(_data)
     print(3, f"Info: {_info}, err: {_err}")
 
-    response = {
-        "status": "OK",
-        "light": "ON",
-        "reset": True
-    }
+    response = prepare_response(_info.get('serial', {}))
+    response['status'] = "OK"
 
+    print(1, 100, response)
     return jsonify(response)
 
 

@@ -40,30 +40,47 @@ def validate_info(info: dict) -> str:
     return Errors.noError.value
 
 
-def save_info(info: dict) -> str:
-
+def get_mongo_db_url(db_conf) -> str:
     #uri = (
     #    "mongodb://c51905_temp_knkrf_ru:KiLzuJehpiweg40@"
     #    "mongo1.c51905.h2,mongo2.c51905.h2,mongo3.c51905.h2/c51905_temp_knkrf_ru?"
     #    "replicaSet=MongoReplica"
     #)
+    _uri = db_conf.get(DBase.dbtype.name, DBase.dbtype.default).value
+    _uri = f"{_uri}://{db_conf.get(DBase.login.name, DBase.login.default)}"
+    _uri = f"{_uri}:{db_conf.get(DBase.password.name, DBase.password.default)}"
+    _uri = f"{_uri}@{','.join(db_conf.get(DBase.mirrors.name, DBase.mirrors.default))}"
+    _uri = f"{_uri}/{db_conf.get(DBase.dbname.name, DBase.dbname.default)}"
+    _uri = f"{_uri}?{db_conf.get(DBase.additional.name, DBase.additional.default)}"
+
+    return _uri
+
+
+def save_info(info: dict) -> str:
     _db: dict = cfg.store.getDefaultDB()
-    _uri = _db.get(DBase.dbtype.name, DBase.dbtype.default).value
-    _uri = f"{_uri}://{_db.get(DBase.login.name, DBase.login.default)}"
-    _uri = f"{_uri}:{_db.get(DBase.password.name, DBase.password.default)}"
-    _uri = f"{_uri}@{','.join(_db.get(DBase.mirrors.name, DBase.mirrors.default))}"
-    _uri = f"{_uri}/{_db.get(DBase.dbname.name, DBase.dbname.default)}"
-    _uri = f"{_uri}?{_db.get(DBase.additional.name, DBase.additional.default)}"
+    _uri: str = get_mongo_db_url(db_conf=_db)
 
     # Connect to MongoDB server collection
     client: MongoClient = MongoClient(_uri)
     db = client[_db.get(DBase.dbname.name, DBase.dbname.default)]
-    collection: Collection = db[_asProt_.DEVICES_DATA_COLLECTION.value]
+    collection: Collection = db[_asProt_.DEVICES_DATA_COLLECTION]
 
     # Add new data to database
     result = collection.insert_one(info)
 
     return Errors.noError.value
+
+
+def get_devices(filter: dict) -> list:
+    _db: dict = cfg.store.getDefaultDB()
+    _uri: str = get_mongo_db_url(db_conf=_db)
+
+    # Connect to MongoDB server collection
+    client: MongoClient = MongoClient(_uri)
+    db = client[_db.get(DBase.dbname.name, DBase.dbname.default)]
+    collection: Collection = db[_asProt_.DEVICES_COLLECTION]
+
+    return list()
 
 
 def process_data(input: str) -> Tuple[str, dict]:
@@ -88,3 +105,14 @@ def process_data(input: str) -> Tuple[str, dict]:
         save_info(_vals)
 
     return _err, _vals
+
+
+def prepare_response(serial: str) -> dict:
+    _ret: dict = {}
+
+    _devices = get_devices(filter={'serial': serial, 'update': {'$ne': {}}})
+    for _device in _devices:
+        for _update in _device['update']:
+            _ret[_update] = _device['update'][_update]['value']
+
+    return _ret
