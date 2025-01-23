@@ -76,11 +76,11 @@ def get_devices(filter: dict) -> list:
     _uri: str = get_mongo_db_url(db_conf=_db)
 
     # Connect to MongoDB server collection
-    client: MongoClient = MongoClient(_uri)
-    db = client[_db.get(DBase.dbname.name, DBase.dbname.default)]
-    collection: Collection = db[_asProt_.DEVICES_COLLECTION]
+    _client: MongoClient = MongoClient(_uri)
+    _database = _client[_db.get(DBase.dbname.name, DBase.dbname.default)]
+    _collection: Collection = _database[_asProt_.DEVICES_COLLECTION]
 
-    return list()
+    return list(_collection.find(filter))
 
 
 def process_data(input: str) -> Tuple[str, dict]:
@@ -109,8 +109,10 @@ def process_data(input: str) -> Tuple[str, dict]:
 
 def prepare_response(serial: str) -> dict:
     _ret: dict = {}
+    print(1, 200, serial)
 
     _devices = get_devices(filter={'serial': serial, 'update': {'$ne': {}}})
+    print(1, 201, _devices)
     for _device in _devices:
         for _update in _device['update']:
             _ret[_update] = _device['update'][_update]['value']
