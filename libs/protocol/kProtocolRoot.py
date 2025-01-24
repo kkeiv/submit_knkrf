@@ -116,6 +116,12 @@ def prepare_response(serial: str) -> dict:
     for _device in _devices:
         for _update in _device['update']:
             if _update in ParamsName:
-                _ret[getattr(Params, ParamsName[_update])['num']] = _device['update'][_update]['value']
+                print(1, 202, _update)
+                print(1, 203, ParamsName[_update])
+                _params = getattr(Params, ParamsName[_update])
+                print(1, 204, _params)
+                print(1, 205, _params['num'])
+                _ret[_params['num']] = _device['update'][_update]['value']
+                print(1, 206, _ret[_params['num']])
 
     return _ret
