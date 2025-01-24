@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 
 from libs.common.config import cfg
-from libs.protocol.assets import Params, ParamsPar
+from libs.protocol.assets import Params, ParamsPar, ParamsName
 from libs.protocol import kProtocol55 as prot55
 from libs.protocol.assets import __assets__ as _asProt_
 from libs.storage.assets import DBase
@@ -115,6 +115,7 @@ def prepare_response(serial: str) -> dict:
     print(1, 201, _devices)
     for _device in _devices:
         for _update in _device['update']:
-            _ret[_update] = _device['update'][_update]['value']
+            if _update in ParamsName:
+                _ret[getattr(Params, ParamsName[_update])['num']] = _device['update'][_update]['value']
 
     return _ret
