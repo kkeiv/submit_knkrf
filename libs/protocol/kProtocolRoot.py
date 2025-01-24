@@ -121,8 +121,9 @@ def prepare_response(serial: str) -> dict:
                 _param_enum = getattr(Params, ParamsName[_update])
                 print(1, 204, _param_enum)
                 _params = _param_enum.value
-                print(1, 205, _params['num'])
-                _ret[_params['num']] = _device['update'][_update]['value']
-                print(1, 206, _ret[_params['num']])
+                _param_key = str(_params['num'])
+                print(1, 205, _param_key)
+                _ret[_param_key] = _device['update'][_update]['value']
+                print(1, 206, _ret[_param_key])
 
     return _ret
