@@ -25,10 +25,24 @@ def submit():
     print(3, f"Info: {_info}, err: {_err}")
 
     response = prepare_response(_info.get('serial', {}))
-    response['status'] = "OK"
+#    response['status'] = "OK"
 
     print(1, 100, response)
     return jsonify(response)
+
+
+@app.route('/acknowledge', methods=['POST'])
+def acknowledge():
+    print(10, request, request.form)
+    _data = request.form.get('data', "")  # Get param "data"
+    _err, _info = process_data(_data)
+    print(11, f"Info: {_info}, err: {_err}")
+
+#    response = prepare_response(_info.get('serial', {}))
+#    response['status'] = "OK"
+
+#    print(12, 100, response)
+    return jsonify({})
 
 
 if __name__ == "__main__":
