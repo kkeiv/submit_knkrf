@@ -98,9 +98,11 @@ def process_data(input: str) -> Tuple[str, dict]:
         if _err != prot55.Errors.noError.value:
             _err = f"{Errors.processigError.value}: {_err}"
 
+    print(1, 500, _vals)
     if _err == Errors.noError.value:
         _err = validate_info(_vals)
     _vals['time'] = int(time.time())
+    print(1, 501, _vals)
 
     if _err == Errors.noError.value:
         save_info(_vals)
