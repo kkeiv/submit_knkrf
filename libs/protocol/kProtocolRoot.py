@@ -66,6 +66,7 @@ def save_info(info: dict) -> str:
     collection: Collection = db[_asProt_.DEVICES_DATA_COLLECTION]
 
     # Add new data to database
+    print(1, 400, info)
     result = collection.insert_one(info)
 
     return Errors.noError.value
