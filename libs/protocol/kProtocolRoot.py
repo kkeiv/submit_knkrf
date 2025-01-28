@@ -68,6 +68,7 @@ def save_info(info: dict) -> str:
     # Add new data to database
     print(1, 400, info)
     result = collection.insert_one(info)
+    print(1, 401, info)
 
     return Errors.noError.value
 
@@ -101,6 +102,7 @@ def process_data(input: str) -> Tuple[str, dict]:
     print(1, 500, _vals)
     if _err == Errors.noError.value:
         _err = validate_info(_vals)
+    print(1, 5000, _vals)
     _vals['time'] = int(time.time())
     print(1, 501, _vals)
 
