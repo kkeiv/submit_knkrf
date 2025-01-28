@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify                        # types: ignored
-from libs.protocol.kProtocolRoot import process_data, prepare_response
+from libs.protocol import kProtocolRoot as kProt
 from libs.common.config import cfg
 
 CONFIG_NAME: str = "config.json"
@@ -20,28 +20,32 @@ def hello_test():
 @app.route('/submit', methods=['POST'])
 def submit():
     print(1, request, request.form)
-    _data = request.form.get('data', "")  # Get param "data"
-    _err, _info = process_data(_data)
+    # get payload from request from user device
+    _data = request.form.get('data', "")
+
+    # process payload into database
+    _err, _info = kProt.process_data(_data)
     print(3, f"Info: {_info}, err: {_err}")
 
-    response = prepare_response(_info.get('serial', {}))
-#    response['status'] = "OK"
-
+    # prepare message for payload in response
+    response = kProt.prepare_response(_info.get('serial', {}))
     print(1, 100, response)
+
+    # send response to use device
     return jsonify(response)
 
 
 @app.route('/acknowledge', methods=['POST'])
 def acknowledge():
     print(10, request, request.form)
-    _data = request.form.get('data', "")  # Get param "data"
-    _err, _info = process_data(_data)
+    # get payload from request from user device
+    _data = request.form.get('data', "")
+
+    # process payload for database update
+    _err, _info = kProt.process_acknowledge(_data)
     print(11, f"Info: {_info}, err: {_err}")
 
-#    response = prepare_response(_info.get('serial', {}))
-#    response['status'] = "OK"
-
-#    print(12, 100, response)
+    # send response to use device
     return jsonify({})
 
 

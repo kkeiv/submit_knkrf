@@ -107,6 +107,30 @@ def process_data(input: str) -> Tuple[str, dict]:
     return _err, _vals
 
 
+def process_acknowledge(input: str) -> Tuple[str, dict]:
+    _len = len(input)
+    if _len < 2:
+        return Errors.wrongVersion.value, {}
+
+    _vals: dict = {}
+    _err: str = Errors.noError.value
+
+    _prot = input[0:2]
+    if _prot == "55":
+        _err, _vals = prot55.process_data(input[2:])
+        if _err != prot55.Errors.noError.value:
+            _err = f"{Errors.processigError.value}: {_err}"
+
+    if _err == Errors.noError.value:
+        _err = validate_info(_vals)
+    _vals['time'] = int(time.time())
+
+    if _err == Errors.noError.value:
+        save_info(_vals)
+
+    return _err, _vals
+
+
 def prepare_response(serial: str) -> dict:
     _ret: dict = {}
     print(1, 200, serial)
