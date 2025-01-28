@@ -107,6 +107,7 @@ def process_data(input: str) -> Tuple[str, dict]:
     if _err == Errors.noError.value:
         save_info(_vals)
 
+    print(1, 502, _vals)
     return _err, _vals
 
 
