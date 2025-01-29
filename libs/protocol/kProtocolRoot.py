@@ -79,7 +79,7 @@ def save_info(info: dict) -> str:
     _dev_info = get_device_update_pars(info=info)
     print(1, 400, _dev_info)
     if len(_dev_info) > 0:
-        cl_device.update_many(filter={"serial": info['serial']}, update=_dev_info)
+        cl_device.update_many(filter={"serial": info['serial']}, update={"$set": _dev_info})
 
     # Add new data to database
     cl_data.insert_one(info)
