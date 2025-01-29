@@ -79,8 +79,14 @@ def save_info(info: dict) -> str:
     _dev_info = get_device_update_pars(info=info)
     print(1, 400, _dev_info)
     if len(_dev_info) > 0:
+        _unset = {}
+        for _key in _dev_info:
+            _unset[f"update.{_key}"] = ""
+
+        print(1, 401, {"serial": info['serial'], "identifier": info['node_id']})
+        print(1, 402, {"$set": _dev_info, "$unset": _unset})
         cl_device.update_many(filter={"serial": info['serial'], "identifier": info['node_id']},
-                              update={"$set": _dev_info})
+                              update={"$set": _dev_info, "$unset": _unset})
 
     # Add new data to database
     cl_data.insert_one(info)
