@@ -5,6 +5,8 @@ class __assets__():
     DEVICES_DATA_COLLECTION = "devices_data"
     DEVICES_COLLECTION = "devices"
 
+    DEVICES_PARAMS = ["lcd_light", "wifi_reset", "log_active"]
+
 
 class ParamsPar(Enum):
     num = -1

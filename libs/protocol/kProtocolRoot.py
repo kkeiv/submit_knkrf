@@ -56,6 +56,16 @@ def get_mongo_db_url(db_conf) -> str:
     return _uri
 
 
+def get_device_update_pars(info: dict) -> dict:
+    _ret: dict = {}
+
+    for _key in _asProt_.DEVICES_PARAMS:
+        if _key in info:
+            _ret[_key] = info[_key]
+
+    return _ret
+
+
 def save_info(info: dict) -> str:
     _db: dict = cfg.store.getDefaultDB()
     _uri: str = get_mongo_db_url(db_conf=_db)
@@ -63,12 +73,16 @@ def save_info(info: dict) -> str:
     # Connect to MongoDB server collection
     client: MongoClient = MongoClient(_uri)
     db = client[_db.get(DBase.dbname.name, DBase.dbname.default)]
-    collection: Collection = db[_asProt_.DEVICES_DATA_COLLECTION]
+    cl_data: Collection = db[_asProt_.DEVICES_DATA_COLLECTION]
+    cl_device: Collection = db[_asProt_.DEVICES_COLLECTION]
+
+    _dev_info = get_device_update_pars(info=info)
+    print(1, 400, _dev_info)
+    if len(_dev_info) > 0:
+        cl_device.update_many(filter={"serial": info['serial']}, update=_dev_info)
 
     # Add new data to database
-    print(1, 400, info)
-    result = collection.insert_one(info)
-    print(1, 401, info)
+    cl_data.insert_one(info)
 
     return Errors.noError.value
 
@@ -99,17 +113,13 @@ def process_data(input: str) -> Tuple[str, dict]:
         if _err != prot55.Errors.noError.value:
             _err = f"{Errors.processigError.value}: {_err}"
 
-    print(1, 500, _vals)
     if _err == Errors.noError.value:
         _err = validate_info(_vals)
-    print(1, 5000, _vals)
     _vals['time'] = int(time.time())
-    print(1, 501, _vals)
 
     if _err == Errors.noError.value:
         save_info(_vals)
 
-    print(1, 502, _vals)
     return _err, _vals
 
 
@@ -139,21 +149,14 @@ def process_acknowledge(input: str) -> Tuple[str, dict]:
 
 def prepare_response(serial: str) -> dict:
     _ret: dict = {}
-    print(1, 200, serial)
 
     _devices = get_devices(filter={'serial': serial, 'update': {'$ne': {}}})
-    print(1, 201, _devices)
     for _device in _devices:
         for _update in _device['update']:
             if _update in ParamsName:
-                print(1, 202, _update)
-                print(1, 203, ParamsName[_update])
                 _param_enum = getattr(Params, ParamsName[_update])
-                print(1, 204, _param_enum)
                 _params = _param_enum.value
                 _param_key = str(_params['num'])
-                print(1, 205, _param_key)
                 _ret[_param_key] = _device['update'][_update]['value']
-                print(1, 206, _ret[_param_key])
 
     return _ret
