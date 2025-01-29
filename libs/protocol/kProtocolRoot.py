@@ -66,7 +66,7 @@ def get_device_update_pars(info: dict) -> dict:
     return _ret
 
 
-def save_info(info: dict) -> str:
+def save_info(info: dict, unset: bool = False) -> str:
     _db: dict = cfg.store.getDefaultDB()
     _uri: str = get_mongo_db_url(db_conf=_db)
 
@@ -83,10 +83,14 @@ def save_info(info: dict) -> str:
         for _key in _dev_info:
             _unset[f"update.{_key}"] = ""
 
+        _update = {"$set": _dev_info}
+        if unset:
+            _update["$unset"] = _unset
+
         print(1, 401, {"serial": info['serial'], "identifier": info['node_id']})
-        print(1, 402, {"$set": _dev_info, "$unset": _unset})
+        print(1, 402, _update)
         cl_device.update_many(filter={"serial": info['serial'], "identifier": info['node_id']},
-                              update={"$set": _dev_info, "$unset": _unset})
+                              update=_update)
 
     # Add new data to database
     cl_data.insert_one(info)
@@ -149,7 +153,7 @@ def process_acknowledge(input: str) -> Tuple[str, dict]:
     _vals['time'] = int(time.time())
 
     if _err == Errors.noError.value:
-        save_info(_vals)
+        save_info(_vals, unset=True)
 
     return _err, _vals
 
