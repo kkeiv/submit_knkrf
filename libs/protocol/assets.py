@@ -34,6 +34,8 @@ class Params(Enum):
     par_21 = {"num": 21, "pname": "par2", "type": "float", "len": -1}
     par_22 = {"num": 22, "pname": "par3", "type": "float", "len": -1}
     par_23 = {"num": 23, "pname": "par4", "type": "float", "len": -1}
+    par_24 = {"num": 24, "pname": "par5", "type": "float", "len": -1}
+    par_25 = {"num": 25, "pname": "par6", "type": "float", "len": -1}
     par_90 = {"num": 90, "pname": "wifi_reset", "type": "dec", "len": 1}
     par_91 = {"num": 91, "pname": "log_active", "type": "dec", "len": 1}
 
@@ -49,6 +51,8 @@ ParamsName: dict = {
     'par2': "par_21",
     'par3': "par_22",
     'par4': "par_23",
+    'par5': "par_24",
+    'par6': "par_25",
     'wifi_reset': "par_90",
     'log_active': "par_91"
 }

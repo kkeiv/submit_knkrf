@@ -65,7 +65,7 @@ def process_data(data: str) -> Tuple[str, dict]:
         if _parLen > 0:
             _buf = _buf[_parLen:]
         else:
-            _err = Errors.unknownParameter.value
+            _err = f"{_buf} - {Errors.unknownParameter.value}"
 
     if _err != "":
         return f"Params error: {_err}", {}
